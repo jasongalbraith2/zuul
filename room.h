@@ -8,18 +8,22 @@
 
 class Room {
     private:
-        std::map<int, Room*> exits;
+        std::map<const char*, Room*> exits;
         std::vector<Item*> items;
         char* fullDescription;
         char* shortDescription;
-        int exitCount;
 
     public:
         Room(const char* fDesc, const char* sDesc);
         ~Room();
 
-        std::vector<Room*> get_exits();
-        void add_exit(Room* r);
+        void add_exit(const char* exitName, Room* r);
+        void add_item(Item* i);
+        void print_desc();
+        bool has_items();
+        Item* get_item();
+        const char* get_sdesc();
+        std::map<const char*, Room*>& get_exits();
 };
 
 #endif

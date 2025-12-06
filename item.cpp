@@ -10,3 +10,7 @@ Item::Item(const char* name) {
 Item::~Item() {
     delete[] itemName;
 }
+
+const char* Item::get_name() {
+    return itemName;
+}

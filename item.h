@@ -10,6 +10,7 @@ class Item {
     public:
         Item(const char* name);
         ~Item();
+        const char* get_name();
 };
 
 #endif
