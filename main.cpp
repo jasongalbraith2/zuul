@@ -26,6 +26,7 @@ work on main loop
 enum CommandType {
     CMD_GO,
     CMD_GRAB,
+    CMD_DROP,
     CMD_QUIT,
     CMD_UNKNOWN
 };
@@ -33,6 +34,7 @@ enum CommandType {
 CommandType parse_command(const char* command) {
     if (strcmp(command, "go") == 0) return CMD_GO;
     if (strcmp(command, "grab") == 0) return CMD_GRAB;
+    if (strcmp(command, "drop") == 0) return CMD_DROP;
     if (strcmp(command, "quit") == 0) return CMD_QUIT;
     return CMD_UNKNOWN;
 }
@@ -172,6 +174,18 @@ void build_map(std::vector<Room*>& roomVector) {
         shaftRoom,
         ballRoomNorth,
         ballRoomSouth,
+        grid1LU,
+        grid1LD,
+        grid1RU,
+        grid1RD,
+        grid2LU,
+        grid2LD,
+        grid2RU,
+        grid2RD,
+        hallway1,
+        hallway2,
+        hallway3,
+        winRoom
     };
 }
 
@@ -202,8 +216,13 @@ int main() {
         
         switch (parse_command(word1)) {
             case CMD_GO: {
+                /* Grab rooms in an unorthodox way cuz galbraith said so*/
                 for (auto& pair : currentRoom->get_exits()) {
+
+                    /* through each iteration check to see if it matches the name */
                     if (strcmp(word2, pair.first) == 0) {
+
+                        /* if the name is matched and you're trying to enter win room */
                         if (strcmp(word2, "UHH") == 0) {
                             if (playerItems.size() == 5) {
                                 currentRoom = pair.second;
@@ -214,10 +233,14 @@ int main() {
                                 std::cout << "Can't travel there, pal. You need all 5 items. You currently have: " << playerItems.size() << '\n';
                             }
                         }
+
+                        /* name match but different room */
                         else {
                             currentRoom = pair.second;
                             currentRoom->print_desc();
                         }
+
+                        /* no name match has no functionality, game just does nothing */
                     }
                 }
                 break;
@@ -228,6 +251,19 @@ int main() {
                 }
                 else {
                     std::cout << "No items.\n";
+                }
+                break;
+            }
+            case CMD_DROP: {
+                if (!playerItems.empty()) {
+                    /* transfer item */
+                    Item* grabbed = playerItems.front();
+                    currentRoom->add_item(grabbed);
+                    playerItems.erase(playerItems.begin());
+                    
+                    /* re-explain room */
+                    std::cout << '\n';
+                    currentRoom->print_desc();
                 }
                 break;
             }
